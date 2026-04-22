@@ -13,7 +13,7 @@ public class Interfaz extends JFrame {
 
     private void InitComponents() {
         setTitle("Juego de Memoria por Cybertron");
-        setSize(800, 650);
+        setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setResizable(false);
@@ -21,12 +21,11 @@ public class Interfaz extends JFrame {
        
         fondo = new JLabel();
         fondo.setBounds(0, 0, getWidth(), getHeight());
-        java.net.URL imgUrl = getClass().getClassLoader().getResource("recursos/fondo");
+        java.net.URL imgUrl = getClass().getClassLoader().getResource("recursos/fondo.jpg");
         if (imgUrl != null) {
             fondo.setIcon(new ImageIcon(imgUrl));
         } else {
-            // Fallback: try absolute path (for development)
-            fondo.setIcon(new ImageIcon("recursos/fondo"));
+            fondo.setIcon(new ImageIcon("recursos/fondo.jpg"));
         }
         add(fondo);
 
