@@ -1,77 +1,146 @@
 package gui;
 
+import datos.Dificultad;
+import logica.GestorDificultades;
+import logica.GestorJugadores;
+import logica.SesionJuego;
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IniciarJuego extends JFrame {
 
-    private JLabel fondo;
-    private JComboBox<String> cbselecUsuarios, dificultad;  // Recomendado usar generic
+    private JComboBox<String> cbUsuarios;
+    private JComboBox<Dificultad> cbDificultad;
+    private JLabel lblError;
 
     public IniciarJuego() {
         initComponents();
         setVisible(true);
     }
 
+    private void cargarUsuarios() {
+        String seleccionActual = (String) cbUsuarios.getSelectedItem();
+
+        cbUsuarios.removeAllItems();
+
+        List<String> nicks = new ArrayList<>(GestorJugadores.get().getNicknames());
+        nicks.sort(String::compareToIgnoreCase);
+
+        if (nicks.isEmpty()) {
+            cbUsuarios.addItem("-- Sin jugadores registrados --");
+            cbUsuarios.setEnabled(false);
+        } else {
+            cbUsuarios.setEnabled(true);
+            cbUsuarios.addItem("-- Seleccione jugador --");
+            for (String nick : nicks) {
+                cbUsuarios.addItem(nick);
+            }
+
+            if (seleccionActual != null && nicks.contains(seleccionActual)) {
+                cbUsuarios.setSelectedItem(seleccionActual);
+            }
+        }
+    }
+
     private void initComponents() {
-        setTitle("Seleccion de usuario");
+        setTitle("Selección de usuario y dificultad");
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(null);
         setResizable(false);
         setLocationRelativeTo(null);
 
-        // FONDO
-        fondo = new JLabel();
-        fondo.setBounds(0, 0, getWidth(), getHeight());
+        // ✅ FONDO COMO CONTENT PANE
         URL imgUrl = getClass().getClassLoader().getResource("recursos/background2.jpg");
-        if (imgUrl != null) {
-            fondo.setIcon(new ImageIcon(imgUrl));
-        } else {
-            fondo.setIcon(new ImageIcon("recursos/background2.jpg"));
+        JLabel fondo = new JLabel(
+                imgUrl != null
+                        ? new ImageIcon(imgUrl)
+                        : new ImageIcon("recursos/background2.jpg")
+        );
+        fondo.setLayout(null);
+        setContentPane(fondo);
+
+        // ── Etiquetas ────────────────────────────────────────────────
+        JLabel lblUsuario = new JLabel("Jugador:");
+        lblUsuario.setBounds(450, 170, 200, 25);
+        lblUsuario.setForeground(Color.YELLOW);
+        lblUsuario.setFont(new Font("Arial", Font.BOLD, 14));
+        fondo.add(lblUsuario);
+
+        JLabel lblDif = new JLabel("Dificultad:");
+        lblDif.setBounds(450, 235, 200, 25);
+        lblDif.setForeground(Color.YELLOW);
+        lblDif.setFont(new Font("Arial", Font.BOLD, 14));
+        fondo.add(lblDif);
+
+        lblError = new JLabel("");
+        lblError.setBounds(400, 310, 280, 25);
+        lblError.setForeground(new Color(255, 80, 80));
+        lblError.setFont(new Font("Arial", Font.ITALIC, 12));
+        fondo.add(lblError);
+
+        // ── ComboBox usuarios ────────────────────────────────────────
+        cbUsuarios = new JComboBox<>();
+        cbUsuarios.setBounds(450, 200, 150, 28);
+        cbUsuarios.setFont(new Font("Arial", Font.PLAIN, 13));
+        cargarUsuarios();
+        fondo.add(cbUsuarios);
+
+        // Botón "+"
+        JButton btnNuevoUsuario = new JButton("+");
+        btnNuevoUsuario.setBounds(605, 200, 45, 28);
+        btnNuevoUsuario.setToolTipText("Registrar nuevo jugador");
+        btnNuevoUsuario.setFocusPainted(false);
+        btnNuevoUsuario.addActionListener(e -> {
+            Registro r = new Registro();
+            r.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent we) {
+                    cargarUsuarios();
+                }
+            });
+        });
+        fondo.add(btnNuevoUsuario);
+
+        // ── ComboBox dificultad ──────────────────────────────────────
+        cbDificultad = new JComboBox<>();
+        cbDificultad.setBounds(450, 260, 200, 28);
+        cbDificultad.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        for (Dificultad d : GestorDificultades.get().getDificultades()) {
+            cbDificultad.addItem(d);
         }
-        add(fondo);
+        cbDificultad.setSelectedIndex(0);
+        fondo.add(cbDificultad);
 
-        // COMBO BOX DE USUARIOS
-        cbselecUsuarios = new JComboBox<>();
-        cbselecUsuarios.setBounds(450, 200, 200, 25);
-        cbselecUsuarios.setName("lista de usuarios");
-        // Agregar elementos para que sea visible
-        cbselecUsuarios.addItem("seleccione el usuario");
-        cbselecUsuarios.addItem("Administrador");
-        cbselecUsuarios.addItem("Juan Pérez");
-        cbselecUsuarios.addItem("María García");
-        cbselecUsuarios.addItem("Carlos López");
-        add(cbselecUsuarios);
+        // ── Botón iniciar ────────────────────────────────────────────
+        JButton btnIniciar = new JButton("Iniciar Juego");
+        btnIniciar.setBounds(450, 350, 200, 50);
+        btnIniciar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnIniciar.setBackground(new Color(255, 215, 0));
+        btnIniciar.setForeground(Color.BLACK);
+        btnIniciar.setFocusPainted(false);
+        fondo.add(btnIniciar);
 
-        //DIFICULTAD
-        dificultad = new JComboBox<>();
-        dificultad.setBounds(450, 250, 200, 25);
-        dificultad.setName("dificultad");
-        // Agregar elementos para que sea visible
-        dificultad.addItem("seleccione la dificultad");
-        dificultad.addItem("muy facil");
-        dificultad.addItem("facil");
-        dificultad.addItem("normal");
-        dificultad.addItem("dificil");
-        add(dificultad);
+        btnIniciar.addActionListener(e -> {
+            lblError.setText("");
 
-        // BOTÓN
-        JButton btnGuardar = new JButton("Iniciar Juego");
-        btnGuardar.setBounds(450, 350, 200, 50);
-        btnGuardar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnGuardar.setBackground(new Color(255, 215, 0));
-        btnGuardar.setForeground(Color.BLACK);
-        add(btnGuardar);
+            String nickname = (String) cbUsuarios.getSelectedItem();
 
-        // ORDEN DE CAPAS (IMPORTANTE: 0 = arriba, números más altos = atrás)
-        setComponentZOrder(cbselecUsuarios, 0);
-        setComponentZOrder(dificultad, 1);
-        setComponentZOrder(btnGuardar, 2);       // Botón en medio
-        setComponentZOrder(fondo, 3);            // Fondo al fondo
+            if (nickname == null || nickname.startsWith("--")) {
+                lblError.setText("⚠ Selecciona un jugador.");
+                return;
+            }
 
-        // Opcional: Forzar repaint
-        repaint();
+            Dificultad dif = (Dificultad) cbDificultad.getSelectedItem();
+            if (dif == null) dif = GestorDificultades.get().getDificultadMinima();
+
+            SesionJuego sesion = new SesionJuego(nickname, dif);
+            dispose();
+            new TableroJuego(sesion).setVisible(true);
+        });
     }
 }

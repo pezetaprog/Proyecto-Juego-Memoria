@@ -74,4 +74,8 @@ public class GestorJugadores {
             .distinct()
             .collect(Collectors.toList());
     }
+    // En GestorJugadores.java — añadir este método
+public Set<String> getNicknames() {
+    return Collections.unmodifiableSet(nicknames);
+}
 }

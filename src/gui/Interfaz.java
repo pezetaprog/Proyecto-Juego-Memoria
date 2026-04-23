@@ -70,6 +70,8 @@ public class Interfaz extends JFrame {
         ranking.setBackground(new Color(67, 16, 116));
         ranking.setFocusPainted(false);
         add(ranking);
+       
+ranking.addActionListener(e -> new Ranking());
 
         registro = new JButton("Registro");
         registro.setBounds(50, 340, 200, 50);
@@ -92,5 +94,6 @@ public class Interfaz extends JFrame {
         setComponentZOrder(registro, 4);
         setComponentZOrder(fondo, 5);
     }
+   
 }
  //C:\Windows\Fonts
