@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Gestiona nicknames únicos y el ranking por dificultad.
- * Guarda las 10 mejores entradas por dificultad (requisito del enunciado).
- */
+
 public class GestorJugadores {
 
     private static final int TOP_POR_DIFICULTAD = 10;
@@ -27,12 +24,7 @@ public class GestorJugadores {
         return instancia;
     }
 
-    // ── Nicknames ────────────────────────────────────────────────────
-
-    /**
-     * Registra un nickname.
-     * @return true si fue aceptado, false si ya existe.
-     */
+   
     public boolean registrarNickname(String nickname) {
         if (nickname == null || nickname.isBlank()) return false;
         return nicknames.add(nickname.trim());
@@ -42,21 +34,13 @@ public class GestorJugadores {
         return nicknames.contains(nickname == null ? "" : nickname.trim());
     }
 
-    // ── Ranking ──────────────────────────────────────────────────────
-
-    /**
-     * Guarda el resultado de una partida.
-     * Solo se mantienen las TOP_POR_DIFICULTAD mejores por dificultad.
-     */
     public void registrarPartida(String nickname, int puntuacion,
                                   long tiempoSegundos, String nombreDificultad) {
         ranking.add(new EntradaRanking(nickname, puntuacion,
                                        tiempoSegundos, nombreDificultad));
     }
 
-    /**
-     * Devuelve el top 10 de una dificultad concreta, ordenado.
-     */
+ 
     public List<EntradaRanking> getRankingPorDificultad(String nombreDificultad) {
         return ranking.stream()
             .filter(e -> e.getNombreDificultad().equalsIgnoreCase(nombreDificultad))
@@ -65,16 +49,14 @@ public class GestorJugadores {
             .collect(Collectors.toList());
     }
 
-    /**
-     * Devuelve todos los nombres de dificultad que tienen al menos una entrada.
-     */
+ 
     public List<String> getDificultadesConEntradas() {
         return ranking.stream()
             .map(EntradaRanking::getNombreDificultad)
             .distinct()
             .collect(Collectors.toList());
     }
-    // En GestorJugadores.java — añadir este método
+
 public Set<String> getNicknames() {
     return Collections.unmodifiableSet(nicknames);
 }

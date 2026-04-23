@@ -26,7 +26,7 @@ public class Ranking extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        // ── Norte: título ────────────────────────────────────────────
+        
         JLabel titulo = new JLabel("🏆 Top 10 por Dificultad", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 22));
         titulo.setForeground(Color.YELLOW);

@@ -17,7 +17,7 @@ public class GestorImagenes {
         return instancia;
     }
 
-    // ── Administración ───────────────────────────────────────────────
+    
 
     public void agregarImagen(String ruta) {
         if (ruta != null && !ruta.isBlank() && !rutas.contains(ruta))
@@ -34,14 +34,7 @@ public class GestorImagenes {
 
     public int totalImagenes() { return rutas.size(); }
 
-    // ── Uso en juego ─────────────────────────────────────────────────
-
-    /**
-     * Devuelve 'cantidad' índices al azar (sin repetición) de las imágenes
-     * disponibles. La GUI los usa para construir el Tablero.
-     *
-     * @throws IllegalStateException si no hay suficientes imágenes cargadas
-     */
+    
     public int[] seleccionarAleatorios(int cantidad) {
         if (rutas.size() < cantidad)
             throw new IllegalStateException(
@@ -57,10 +50,37 @@ public class GestorImagenes {
         return resultado;
     }
 
-    /**
-     * Devuelve la ruta de una imagen por su índice.
-     */
+   
     public String getRuta(int indice) {
         return rutas.get(indice);
     }
+    public void cargarDesdeRecursos(String paquete) {
+    // paquete ejemplo: "recursos" (sin slashes)
+    String ruta = "/" + paquete;
+    try {
+        // Leer el contenido del package como stream de texto
+        java.io.InputStream is = getClass().getResourceAsStream(ruta);
+        if (is == null) {
+            System.err.println("Package no encontrado: " + ruta);
+            return;
+        }
+
+        // El stream contiene los nombres de archivos separados por línea
+        java.io.BufferedReader br = new java.io.BufferedReader(
+            new java.io.InputStreamReader(is)
+        );
+
+        String linea;
+        while ((linea = br.readLine()) != null) {
+            if (linea.toLowerCase().endsWith(".png") ||
+                linea.toLowerCase().endsWith(".jpg")) {
+                agregarImagen(ruta + "/" + linea);
+            }
+        }
+        System.out.println("Imágenes cargadas: " + rutas);
+
+    } catch (Exception e) {
+        System.err.println("Error: " + e.getMessage());
+    }
+}
 }
