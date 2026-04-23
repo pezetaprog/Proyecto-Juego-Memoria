@@ -7,6 +7,7 @@ import logica.Tablero;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 public class TableroJuego extends JFrame {
 
@@ -19,7 +20,6 @@ public class TableroJuego extends JFrame {
     private long segundosTranscurridos = 0;
 
     private static final Color COLOR_REVERSO    = new Color(44, 62, 80);
-    private static final Color COLOR_EMPAREJADA = new Color(80, 80, 80);
     private static final Color[] COLORES = {
         new Color(231, 76, 60),  new Color(52, 152, 219),
         new Color(46, 204, 113), new Color(241, 196, 15),
@@ -45,12 +45,10 @@ public class TableroJuego extends JFrame {
         int columnas = sesion.getDificultad().getColumnas();
         int parejas  = (filas * columnas) / 2;
 
-        // Usar imágenes si hay suficientes; si no, usar colores
         try {
             int[] indices = GestorImagenes.get().seleccionarAleatorios(parejas);
             tablero = new Tablero(filas, columnas, indices);
         } catch (IllegalStateException ex) {
-            // No hay imágenes cargadas: modo color
             tablero = new Tablero(filas, columnas);
         }
 
@@ -72,7 +70,6 @@ public class TableroJuego extends JFrame {
         setSize(anchoVentana, altoVentana);
         setLocationRelativeTo(null);
 
-        // ── Norte: info del jugador ──────────────────────────────────
         JPanel norte = new JPanel(new GridLayout(1, 3));
         norte.setBackground(new Color(30, 10, 60));
         norte.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
@@ -86,7 +83,6 @@ public class TableroJuego extends JFrame {
         norte.add(lblPartidas);
         add(norte, BorderLayout.NORTH);
 
-        // ── Centro: tablero de cartas ────────────────────────────────
         JPanel panelTablero = new JPanel(new GridLayout(filas, columnas, 6, 6));
         panelTablero.setBackground(new Color(20, 5, 40));
         panelTablero.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -100,13 +96,10 @@ public class TableroJuego extends JFrame {
         }
         add(panelTablero, BorderLayout.CENTER);
 
-        // ── Sur: botones ─────────────────────────────────────────────
         JPanel sur = new JPanel();
         sur.setBackground(new Color(30, 10, 60));
-
         JButton btnRanking = botonSur("Ver Ranking");
         btnRanking.addActionListener(e -> new Ranking());
-
         add(sur, BorderLayout.SOUTH);
         sur.add(btnRanking);
 
@@ -138,7 +131,17 @@ public class TableroJuego extends JFrame {
         btn.setOpaque(true);
         btn.setBorderPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
+        btn.setVerticalAlignment(SwingConstants.CENTER);
         return btn;
+    }
+
+    private ImageIcon escalarImagen(String ruta, int ancho, int alto) {
+        URL url = getClass().getResource(ruta);
+        if (url == null) return null;
+        ImageIcon icon = new ImageIcon(url);
+        Image scaled = icon.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
     }
 
     private void iniciarCronometro() {
@@ -152,48 +155,80 @@ public class TableroJuego extends JFrame {
     }
 
     private void actualizarVista() {
-        SwingUtilities.invokeLater(() -> {
-            int parejasEncontradas = 0;
+    SwingUtilities.invokeLater(() -> {
+        int parejasEncontradas = 0;
 
-            for (int i = 0; i < botones.length; i++) {
-                Carta carta = tablero.getCarta(i);
-                JButton btn = botones[i];
+        for (int i = 0; i < botones.length; i++) {
+            Carta carta = tablero.getCarta(i);
+            JButton btn = botones[i];
 
-                if (carta.estaEmparejada()) {
-                    parejasEncontradas++;
-                    btn.setBackground(COLOR_EMPAREJADA);
-                    btn.setForeground(Color.LIGHT_GRAY);
+            if (carta.estaEmparejada()) {
+                parejasEncontradas++;
+
+                String ruta = GestorImagenes.get().getRuta(carta.getIdPareja());
+                ImageIcon icon = escalarImagen(ruta, 85, 85);
+
+                if (icon != null) {
+                    btn.setIcon(icon);
+                    btn.setDisabledIcon(icon); // 🔥 FIX
+                    btn.setText("");
+                    btn.setBackground(new Color(20, 5, 40));
+                } else {
+                    btn.setIcon(null);
+                    btn.setBackground(COLORES[carta.getIdPareja() % COLORES.length]);
                     btn.setText("✓");
-                    btn.setEnabled(false);
+                    btn.setForeground(Color.WHITE);
+                }
 
-                } else if (carta.estaVolteada()) {
+                btn.setBorder(BorderFactory.createLineBorder(new Color(46, 204, 113), 3));
+                btn.setBorderPainted(true);
+                btn.setEnabled(false);
+
+            } else if (carta.estaVolteada()) {
+
+                String ruta = GestorImagenes.get().getRuta(carta.getIdPareja());
+                ImageIcon icon = escalarImagen(ruta, 85, 85);
+
+                if (icon != null) {
+                    btn.setIcon(icon);
+                    btn.setDisabledIcon(icon); // 🔥 FIX
+                    btn.setText("");
+                    btn.setBackground(new Color(20, 5, 40));
+                } else {
+                    btn.setIcon(null);
                     btn.setBackground(COLORES[carta.getIdPareja() % COLORES.length]);
                     btn.setForeground(Color.WHITE);
                     btn.setText(String.valueOf(carta.getIdPareja() + 1));
-                    btn.setEnabled(false);
-
-                } else {
-                    btn.setBackground(COLOR_REVERSO);
-                    btn.setForeground(Color.WHITE);
-                    btn.setText("?");
-                    btn.setEnabled(true);
                 }
+
+                btn.setBorderPainted(false);
+                btn.setEnabled(false);
+
+            } else {
+                btn.setIcon(null);
+                btn.setBorderPainted(false);
+                btn.setBackground(COLOR_REVERSO);
+                btn.setForeground(Color.WHITE);
+                btn.setText("?");
+                btn.setEnabled(true);
             }
+        }
 
-            // parejasEncontradas viene en unidades de carta, dividir entre 2
-            int parejas = parejasEncontradas / 2;
-            int puntosActuales = sesion.getPuntuacionAcumulada()
-                + parejas * sesion.getDificultad().getPuntosPorPareja();
-            lblPuntaje.setText("Puntos: " + puntosActuales);
+        int parejas = parejasEncontradas / 2;
+        int puntosActuales = sesion.getPuntuacionAcumulada()
+            + parejas * sesion.getDificultad().getPuntosPorPareja();
 
-            if (tablero.juegoTerminado()) terminarPartida(parejas);
-        });
-    }
+        lblPuntaje.setText("Puntos: " + puntosActuales);
+
+        if (tablero.juegoTerminado()) {
+            terminarPartida(parejas);
+        }
+    });
+}
 
     private void terminarPartida(int parejas) {
         cronometro.stop();
 
-        // Registrar en la sesión (acumula puntos y guarda en ranking)
         int puntosGanados = sesion.completarPartida(parejas, segundosTranscurridos);
 
         String msg = String.format(
@@ -213,7 +248,6 @@ public class TableroJuego extends JFrame {
             null, opciones, opciones[0]);
 
         if (resp == 0) {
-            // Continuar: acumula puntaje, misma dificultad
             sesion.continuar();
             segundosTranscurridos = 0;
             construirTablero();
@@ -222,17 +256,14 @@ public class TableroJuego extends JFrame {
             iniciarCronometro();
 
         } else if (resp == 1) {
-            // Reiniciar: elegir nueva dificultad
             dispose();
             new IniciarJuego().setVisible(true);
 
         } else {
-            // Salir al menú principal
             dispose();
         }
     }
 
-    /** Reconstruye solo los botones cuando se continúa */
     private void construirBotonesTablero() {
         JPanel panelTablero = (JPanel) ((BorderLayout) getContentPane()
             .getLayout()).getLayoutComponent(BorderLayout.CENTER);
