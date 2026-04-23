@@ -131,7 +131,7 @@ public class IniciarJuego extends JFrame {
             String nickname = (String) cbUsuarios.getSelectedItem();
 
             if (nickname == null || nickname.startsWith("--")) {
-                lblError.setText("⚠ Selecciona un jugador.");
+                lblError.setText("Selecciona un jugador.");
                 return;
             }
 

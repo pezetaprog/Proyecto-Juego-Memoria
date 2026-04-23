@@ -45,7 +45,6 @@ public class TableroJuego extends JFrame {
         int columnas = sesion.getDificultad().getColumnas();
         int parejas  = (filas * columnas) / 2;
 
-        // Usar imágenes si hay suficientes; si no, usar colores
         try {
             int[] indices = GestorImagenes.get().seleccionarAleatorios(parejas);
             tablero = new Tablero(filas, columnas, indices);
@@ -72,7 +71,6 @@ public class TableroJuego extends JFrame {
         setSize(anchoVentana, altoVentana);
         setLocationRelativeTo(null);
 
-        // ── Norte: info del jugador ──────────────────────────────────
         JPanel norte = new JPanel(new GridLayout(1, 3));
         norte.setBackground(new Color(30, 10, 60));
         norte.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
@@ -86,7 +84,6 @@ public class TableroJuego extends JFrame {
         norte.add(lblPartidas);
         add(norte, BorderLayout.NORTH);
 
-        // ── Centro: tablero de cartas ────────────────────────────────
         JPanel panelTablero = new JPanel(new GridLayout(filas, columnas, 6, 6));
         panelTablero.setBackground(new Color(20, 5, 40));
         panelTablero.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -100,7 +97,6 @@ public class TableroJuego extends JFrame {
         }
         add(panelTablero, BorderLayout.CENTER);
 
-        // ── Sur: botones ─────────────────────────────────────────────
         JPanel sur = new JPanel();
         sur.setBackground(new Color(30, 10, 60));
 
@@ -193,11 +189,10 @@ public class TableroJuego extends JFrame {
     private void terminarPartida(int parejas) {
         cronometro.stop();
 
-        // Registrar en la sesión (acumula puntos y guarda en ranking)
         int puntosGanados = sesion.completarPartida(parejas, segundosTranscurridos);
 
         String msg = String.format(
-            "🎉 ¡Completaste el tablero!\n\n" +
+            "¡Completaste el tablero!\n\n" +
             "Puntos esta partida : %d\n" +
             "Puntuación total    : %d\n" +
             "Tiempo              : %02d:%02d",
@@ -213,7 +208,6 @@ public class TableroJuego extends JFrame {
             null, opciones, opciones[0]);
 
         if (resp == 0) {
-            // Continuar: acumula puntaje, misma dificultad
             sesion.continuar();
             segundosTranscurridos = 0;
             construirTablero();
@@ -222,12 +216,10 @@ public class TableroJuego extends JFrame {
             iniciarCronometro();
 
         } else if (resp == 1) {
-            // Reiniciar: elegir nueva dificultad
             dispose();
             new IniciarJuego().setVisible(true);
 
         } else {
-            // Salir al menú principal
             dispose();
         }
     }
