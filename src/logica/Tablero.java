@@ -14,7 +14,23 @@ public class Tablero {
     private boolean esperando = false;
 
     
+    private int[] imagenesAsignadas;
     private Runnable onActualizarVista;
+
+    public Tablero(int filas, int columnas, int[] indicesImagenes) {
+        this.filas = filas;
+        this.columnas = columnas;
+        int totalCartas = filas * columnas;
+        if (totalCartas % 2 != 0)
+            throw new IllegalArgumentException("El número total de cartas debe ser par");
+        if (indicesImagenes.length < totalCartas / 2)
+            throw new IllegalArgumentException("No hay suficientes imágenes para las parejas");
+
+        cartas = new Carta[totalCartas];
+        this.imagenesAsignadas = indicesImagenes;
+        inicializarCartas();
+        barajar();
+    }
 
     public Tablero(int filas, int columnas) {
         this.filas = filas;
@@ -24,6 +40,9 @@ public class Tablero {
             throw new IllegalArgumentException("El número total de cartas debe ser par");
         }
         cartas = new Carta[totalCartas];
+        int[] indices = new int[totalCartas / 2];
+        for (int i = 0; i < indices.length; i++) indices[i] = i;
+        this.imagenesAsignadas = indices;
         inicializarCartas();
         barajar();
     }
@@ -40,11 +59,10 @@ public class Tablero {
     }
 
     private void inicializarCartas() {
-        int parejas = cartas.length / 2;
         int index = 0;
-        for (int id = 0; id < parejas; id++) {
-            cartas[index++] = new Carta(id);
-            cartas[index++] = new Carta(id);
+        for (int id = 0; id < cartas.length / 2; id++) {
+            cartas[index++] = new Carta(id, imagenesAsignadas[id]);
+            cartas[index++] = new Carta(id, imagenesAsignadas[id]);
         }
     }
 

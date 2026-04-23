@@ -1,24 +1,24 @@
 package logica;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-// Singleton que vive durante toda la sesión
+/**
+ * Gestiona nicknames únicos y el ranking por dificultad.
+ * Guarda las 10 mejores entradas por dificultad (requisito del enunciado).
+ */
 public class GestorJugadores {
 
-    public static class Entrada {
-        public final String nombre;
-        public final int puntuacion;
-
-        public Entrada(String nombre, int puntuacion) {
-            this.nombre = nombre;
-            this.puntuacion = puntuacion;
-        }
-    }
+    private static final int TOP_POR_DIFICULTAD = 10;
 
     private static GestorJugadores instancia;
-    private final List<Entrada> ranking = new ArrayList<>();
+
+    private final Set<String>          nicknames = new HashSet<>();
+    private final List<EntradaRanking> ranking   = new ArrayList<>();
 
     private GestorJugadores() {}
 
@@ -27,15 +27,51 @@ public class GestorJugadores {
         return instancia;
     }
 
-    // Registrar resultado al terminar una partida
-    public void registrar(String nombre, int puntuacion) {
-        ranking.add(new Entrada(nombre, puntuacion));
+    // ── Nicknames ────────────────────────────────────────────────────
+
+    /**
+     * Registra un nickname.
+     * @return true si fue aceptado, false si ya existe.
+     */
+    public boolean registrarNickname(String nickname) {
+        if (nickname == null || nickname.isBlank()) return false;
+        return nicknames.add(nickname.trim());
     }
 
-    // Devuelve el ranking ordenado de mayor a menor puntuación
-    public List<Entrada> getRanking() {
-        List<Entrada> ordenado = new ArrayList<>(ranking);
-        ordenado.sort(Comparator.comparingInt((Entrada e) -> e.puntuacion).reversed());
-        return ordenado;
+    public boolean nicknameExiste(String nickname) {
+        return nicknames.contains(nickname == null ? "" : nickname.trim());
+    }
+
+    // ── Ranking ──────────────────────────────────────────────────────
+
+    /**
+     * Guarda el resultado de una partida.
+     * Solo se mantienen las TOP_POR_DIFICULTAD mejores por dificultad.
+     */
+    public void registrarPartida(String nickname, int puntuacion,
+                                  long tiempoSegundos, String nombreDificultad) {
+        ranking.add(new EntradaRanking(nickname, puntuacion,
+                                       tiempoSegundos, nombreDificultad));
+    }
+
+    /**
+     * Devuelve el top 10 de una dificultad concreta, ordenado.
+     */
+    public List<EntradaRanking> getRankingPorDificultad(String nombreDificultad) {
+        return ranking.stream()
+            .filter(e -> e.getNombreDificultad().equalsIgnoreCase(nombreDificultad))
+            .sorted()
+            .limit(TOP_POR_DIFICULTAD)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Devuelve todos los nombres de dificultad que tienen al menos una entrada.
+     */
+    public List<String> getDificultadesConEntradas() {
+        return ranking.stream()
+            .map(EntradaRanking::getNombreDificultad)
+            .distinct()
+            .collect(Collectors.toList());
     }
 }
