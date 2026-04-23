@@ -44,7 +44,7 @@ public class Interfaz extends JFrame {
 
 
         jugar = new JButton("Jugar");
-        jugar.setBounds(50, 250, 200, 50);
+        jugar.setBounds(50, 130, 200, 50);
         jugar.setFont(new Font("Arial", Font.BOLD, 20));
         jugar.setForeground(Color.YELLOW);
         jugar.setBackground(new Color(67, 16, 116));
@@ -53,7 +53,7 @@ public class Interfaz extends JFrame {
 
 
         salir = new JButton("Salir");
-        salir.setBounds(50, 390, 200, 50);
+        salir.setBounds(50, 200, 200, 50);
         salir.setFont(new Font("Arial", Font.BOLD, 20));
         salir.setForeground(Color.YELLOW);
         salir.setBackground(new Color(67, 16, 116));
@@ -61,18 +61,33 @@ public class Interfaz extends JFrame {
         add(salir);
 
         ranking = new JButton("Ranking");
-        ranking.setBounds(50, 320, 200, 50);
+        ranking.setBounds(50, 270, 200, 50);
         ranking.setFont(new Font("Arial", Font.BOLD, 20));
         ranking.setForeground(Color.YELLOW);
         ranking.setBackground(new Color(67, 16, 116));
         ranking.setFocusPainted(false);
         add(ranking);
 
+        registro = new JButton("Registro");
+        registro.setBounds(50, 340, 200, 50);
+        registro.setFont(new Font("Arial", Font.BOLD, 20));
+        registro.setForeground(Color.YELLOW);
+        registro.setBackground(new Color(67, 16, 116));
+        registro.setFocusPainted(false);
+
+
+        registro.addActionListener(e -> {
+            new Registro();
+        });
+
+        add(registro);
+
         setComponentZOrder(titulo, 0);
         setComponentZOrder(jugar, 1);
         setComponentZOrder(ranking, 2);
         setComponentZOrder(salir, 3);
-        setComponentZOrder(fondo, 4);
+        setComponentZOrder(registro, 4);
+        setComponentZOrder(fondo, 5);
     }
 }
  //C:\Windows\Fonts
