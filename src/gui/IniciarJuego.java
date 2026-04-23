@@ -53,7 +53,7 @@ public class IniciarJuego extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        // ✅ FONDO COMO CONTENT PANE
+        
         URL imgUrl = getClass().getClassLoader().getResource("recursos/background2.jpg");
         JLabel fondo = new JLabel(
                 imgUrl != null
@@ -63,7 +63,7 @@ public class IniciarJuego extends JFrame {
         fondo.setLayout(null);
         setContentPane(fondo);
 
-        // ── Etiquetas ────────────────────────────────────────────────
+        
         JLabel lblUsuario = new JLabel("Jugador:");
         lblUsuario.setBounds(450, 170, 200, 25);
         lblUsuario.setForeground(Color.YELLOW);
@@ -82,14 +82,13 @@ public class IniciarJuego extends JFrame {
         lblError.setFont(new Font("Arial", Font.ITALIC, 12));
         fondo.add(lblError);
 
-        // ── ComboBox usuarios ────────────────────────────────────────
         cbUsuarios = new JComboBox<>();
         cbUsuarios.setBounds(450, 200, 150, 28);
         cbUsuarios.setFont(new Font("Arial", Font.PLAIN, 13));
         cargarUsuarios();
         fondo.add(cbUsuarios);
 
-        // Botón "+"
+      
         JButton btnNuevoUsuario = new JButton("+");
         btnNuevoUsuario.setBounds(605, 200, 45, 28);
         btnNuevoUsuario.setToolTipText("Registrar nuevo jugador");
@@ -105,7 +104,7 @@ public class IniciarJuego extends JFrame {
         });
         fondo.add(btnNuevoUsuario);
 
-        // ── ComboBox dificultad ──────────────────────────────────────
+        
         cbDificultad = new JComboBox<>();
         cbDificultad.setBounds(450, 260, 200, 28);
         cbDificultad.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -116,7 +115,7 @@ public class IniciarJuego extends JFrame {
         cbDificultad.setSelectedIndex(0);
         fondo.add(cbDificultad);
 
-        // ── Botón iniciar ────────────────────────────────────────────
+       
         JButton btnIniciar = new JButton("Iniciar Juego");
         btnIniciar.setBounds(450, 350, 200, 50);
         btnIniciar.setFont(new Font("Arial", Font.BOLD, 16));
