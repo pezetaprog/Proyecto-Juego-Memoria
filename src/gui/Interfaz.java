@@ -6,19 +6,22 @@ public class Interfaz extends JFrame {
     private JPanel panelPresentacion;
     private JLabel fondo;
     private JLabel titulo;
+    private JButton jugar, salir, ranking;
 
     public Interfaz() {
         this.InitComponents();
+        this.setVisible(true);
     }
 
     private void InitComponents() {
         setTitle("Juego de Memoria por Cybertron");
-        setSize(800, 800);
+        setSize(800, 460);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setResizable(false);
+        setLocationRelativeTo(null);
 
-       
+        // FONDO
         fondo = new JLabel();
         fondo.setBounds(0, 0, getWidth(), getHeight());
         java.net.URL imgUrl = getClass().getClassLoader().getResource("recursos/fondo.jpg");
@@ -29,15 +32,47 @@ public class Interfaz extends JFrame {
         }
         add(fondo);
 
-        titulo = new JLabel("Rescatanos encontrandonos a todos ");
-        titulo.setBounds(0, 20, 800, 30);
+        //FUENTE GIN RAI
+
+        titulo = new JLabel("Rescate autobot");
+        titulo.setBounds(0, 50, 800, 50);
         titulo.setHorizontalAlignment(JLabel.CENTER);
-        titulo.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        titulo.setFont(new Font("Arial", Font.BOLD, 36));
+        titulo.setForeground(Color.YELLOW);
         titulo.setOpaque(false);
         add(titulo);
 
-      
+
+        jugar = new JButton("Jugar");
+        jugar.setBounds(50, 250, 200, 50);
+        jugar.setFont(new Font("Arial", Font.BOLD, 20));
+        jugar.setForeground(Color.YELLOW);
+        jugar.setBackground(new Color(67, 16, 116));
+        jugar.setFocusPainted(false);
+        add(jugar);
+
+
+        salir = new JButton("Salir");
+        salir.setBounds(50, 390, 200, 50);
+        salir.setFont(new Font("Arial", Font.BOLD, 20));
+        salir.setForeground(Color.YELLOW);
+        salir.setBackground(new Color(67, 16, 116));
+        salir.setFocusPainted(false);
+        add(salir);
+
+        ranking = new JButton("Ranking");
+        ranking.setBounds(50, 320, 200, 50);
+        ranking.setFont(new Font("Arial", Font.BOLD, 20));
+        ranking.setForeground(Color.YELLOW);
+        ranking.setBackground(new Color(67, 16, 116));
+        ranking.setFocusPainted(false);
+        add(ranking);
+
         setComponentZOrder(titulo, 0);
-        setComponentZOrder(fondo, 1);
+        setComponentZOrder(jugar, 1);
+        setComponentZOrder(ranking, 2);
+        setComponentZOrder(salir, 3);
+        setComponentZOrder(fondo, 4);
     }
 }
+ //C:\Windows\Fonts
