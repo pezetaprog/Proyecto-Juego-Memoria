@@ -49,6 +49,9 @@ public class Interfaz extends JFrame {
         jugar.setForeground(Color.YELLOW);
         jugar.setBackground(new Color(67, 16, 116));
         jugar.setFocusPainted(false);
+        jugar.addActionListener(e -> {
+            new IniciarJuego();
+        });
         add(jugar);
 
 
