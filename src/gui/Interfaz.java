@@ -6,7 +6,7 @@ public class Interfaz extends JFrame {
     private JPanel panelPresentacion;
     private JLabel fondo;
     private JLabel titulo;
-    private JButton jugar, salir, ranking;
+    private JButton jugar, salir, ranking, registro;
 
     public Interfaz() {
         this.InitComponents();
